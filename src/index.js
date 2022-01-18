@@ -34,12 +34,8 @@ function MultiTouchJoyStick({
 
       if (onValue) {
         setValue(
-          (refX.current = Number(
-            (event.translationX / (width / 2 - ballRadius)).toFixed(2)
-          )),
-          (refY.current = Number(
-            (event.translationY / (height / 2 - ballRadius)).toFixed(2)
-          ))
+          Number((event.translationX / (width / 2 - ballRadius)).toFixed(2)),
+          Number((event.translationY / (height / 2 - ballRadius)).toFixed(2))
         );
       }
     },
