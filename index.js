@@ -1,3 +1,3 @@
-import MultitouchJoystick from "./src/index.js";
+import MultitouchJoystick from "./src/index.jsx";
 
 export default MultitouchJoystick;
