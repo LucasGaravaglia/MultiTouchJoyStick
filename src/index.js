@@ -15,11 +15,14 @@ function MultiTouchJoyStick({
   ballRadius = 50,
   height = 300,
   width = 200,
-  refX,
-  refY,
+  onValue,
 }) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+
+  const setValue = (x, y) => {
+    onValue && onValue({ x, y });
+  };
 
   const panGestureEvent = useAnimatedGestureHandler({
     onStart: () => {},
@@ -28,18 +31,22 @@ function MultiTouchJoyStick({
         translateX.value = event.translationX;
       if (event.translationY < height / 2 && event.translationY > -height / 2)
         translateY.value = event.translationY;
-      if (refY)
-        refY.current = Number(
-          (event.translationY / (height / 2 - ballRadius)).toFixed(2)
+
+      if (onValue) {
+        setValue(
+          (refX.current = Number(
+            (event.translationX / (width / 2 - ballRadius)).toFixed(2)
+          )),
+          (refY.current = Number(
+            (event.translationY / (height / 2 - ballRadius)).toFixed(2)
+          ))
         );
-      if (refX)
-        refX.current = Number(
-          (event.translationX / (width / 2 - ballRadius)).toFixed(2)
-        );
+      }
     },
     onEnd: () => {
-      if (refX) refX.current = 0;
-      if (refY) refY.current = 0;
+      if (onValue) {
+        setValue(0, 0);
+      }
       translateX.value = withSpring(0);
       translateY.value = withSpring(0);
     },
