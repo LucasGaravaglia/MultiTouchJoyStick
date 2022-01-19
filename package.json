@@ -1,6 +1,6 @@
 {
   "name": "multitouchjoystick",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,8 +10,15 @@
     "type": "git",
     "url": "git+https://github.com/LucasGaravaglia/MultiTouchJoyStick.git"
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "react-native",
+    "joystick",
+    "multitouch",
+    "android",
+    "gamepad"
+  ],
+  "author": "LucasGaravaglia",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/LucasGaravaglia/MultiTouchJoyStick/issues"
   },
