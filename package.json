@@ -1,6 +1,6 @@
 {
   "name": "multitouchjoystick",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/LucasGaravaglia/MultiTouchJoyStick#readme",
   "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "@types/react": "^17.0.38",
+    "@types/react-native": "^0.66.12",
+    "@types/react-test-renderer": "^17.0.1",
     "tslint": "^6.1.3",
     "typescript": "^3.9.10"
   }

@@ -1,13 +1,16 @@
-import React, {memo} from 'react';
-import {View} from 'react-native';
+import React, { memo, useEffect, useState } from 'react';
+import { View } from 'react-native';
 import Animated, {
+  runOnJS,
+  SharedValue,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
 
-import {PanGestureHandler} from 'react-native-gesture-handler';
+import { HandlerStateChangeEvent, PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import { runOnUI } from 'react-native-reanimated';
 
 interface propsJoystick {
   width?: number;
@@ -15,8 +18,7 @@ interface propsJoystick {
   ballRadius?: number;
   backgroundColor?: string;
   ballColor?: string;
-  refX: React.MutableRefObject<number>;
-  refY: React.MutableRefObject<number>;
+  onValue: (x, y) => {};
 }
 
 function MultiTouchJoyStick({
@@ -25,32 +27,28 @@ function MultiTouchJoyStick({
   ballRadius = 50,
   height = 300,
   width = 200,
-  refX,
-  refY,
-}:propsJoystick) {
+  onValue,
+}: propsJoystick) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
 
-  const panGestureEvent = useAnimatedGestureHandler({
-    onStart: () => {},
+  const panGestureEvent = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
+    onStart: () => { },
+
     onActive: (event) => {
       if (event.translationX < width / 2 && event.translationX > -width / 2)
         translateX.value = event.translationX;
       if (event.translationY < height / 2 && event.translationY > -height / 2)
         translateY.value = event.translationY;
-      
-      if (refX) {
-        refX.current = Number((event.translationX / (width / 2 - ballRadius)).toFixed(2));
-      }
-      if (refY)
-        refY.current = Number((event.translationY / (height / 2 - ballRadius)).toFixed(2));
+
+      runOnJS(onValue)(Number((event.translationX / (width / 2 - ballRadius)).toFixed(2)), Number((event.translationY / (height / 2 - ballRadius)).toFixed(2)))
     },
     onEnd: () => {
-      if (refX) refX.current = 0;
-      if (refY) refY.current = 0;
+      runOnJS(onValue)(0, 0)
       translateX.value = withSpring(0);
       translateY.value = withSpring(0);
     },
+
   });
 
   const rStyle = useAnimatedStyle(() => {
@@ -75,7 +73,7 @@ function MultiTouchJoyStick({
         justifyContent: 'center',
         backgroundColor: backgroundColor,
       }}>
-      <PanGestureHandler onGestureEvent={panGestureEvent}>
+      <PanGestureHandler onGestureEvent={panGestureEvent} >
         <Animated.View
           style={[
             {
