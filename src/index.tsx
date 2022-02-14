@@ -1,14 +1,16 @@
-import React, {memo} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import Animated, {
   runOnJS,
+  SharedValue,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
 
-import {  PanGestureHandlerGestureEvent} from 'react-native-gesture-handler';
+import {HandlerStateChangeEvent, PanGestureHandler, PanGestureHandlerGestureEvent} from 'react-native-gesture-handler';
+import { runOnUI } from 'react-native-reanimated';
 
 interface propsJoystick {
   width?: number;
@@ -18,7 +20,10 @@ interface propsJoystick {
   ballColor?: string;
   onValue: (x,y) => {};
 }
-
+type ContextType = {
+  translateX: number;
+  translateY: number;
+};
 function MultiTouchJoyStick({
   backgroundColor = '#f5f5f5',
   ballColor = 'rgba(0, 0, 256, 0.5)',
@@ -29,9 +34,13 @@ function MultiTouchJoyStick({
 }:propsJoystick) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+
+  const absoluteInitialX = useSharedValue(0);
+  const absoluteInitialY = useSharedValue(0);
+
   
-  const panGestureEvent = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
-    onStart: () => {},
+  const panGestureEvent = useAnimatedGestureHandler<PanGestureHandlerGestureEvent,ContextType>({
+    onStart: (event) => {},
     
     onActive: (event) => {
       if (event.translationX < width / 2  && event.translationX > -width / 2)
